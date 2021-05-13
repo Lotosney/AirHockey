@@ -14,7 +14,32 @@ const board = () => {
 
     context.stroke()
 }
+
+window.addEventListener('mousemove', (e) => {
+    player.x = e.x - window.innerWidth/2 + width/2
+    player.y = e.y - height*.05
+}) 
+class Player {
+    constructor() {
+        this.x = undefined
+        this.y = undefined
+ 
+    }
+
+    draw() {
+        context.beginPath()
+        context.arc(this.x, this.y , width*.05 ,0 ,2*Math.PI)
+        context.fillStyle = "red"
+        context.fill()
+        context.stroke()
+    }
+
+}
+const player = new Player
+
 function animate() {
+    context.clearRect(0,0,width,height)
+    player.draw()
     board()    
     requestAnimationFrame(animate)
 }
