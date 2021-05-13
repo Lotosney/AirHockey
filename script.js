@@ -65,12 +65,19 @@ class Puck {
     update(){
         this.x +=this.dx
         this.y += this.dy
+
+        const a = Math.abs(this.x - player.x)
+        const b = Math.abs(this.y - player.y)
+        const c = Math.sqrt(a**2 + b**2)
         if(this.x + width*.04 > width || this.x - width*.04 < 0) {
             this.dx *= -1
         }
 
         if(this.y + width*.04 > height || this.y - width*.04 < 0) {
             this.dy *= -1
+        }
+        if(c<width*.04 + width*.05){
+            console.log("hit")
         }
     }
 }
