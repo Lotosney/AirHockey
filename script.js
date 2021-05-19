@@ -76,9 +76,20 @@ class Puck {
         if(this.y + width*.04 > height || this.y - width*.04 < 0) {
             this.dy *= -1
         }
-        if(c<width*.04 + width*.05){
-            console.log("hit")
+        if(c < width*.04 + width*.05){
+            if (player.dx === 0){
+                this.dx*=-1
+            }else{
+                this.dx+=player.dx * .5 
+            }
+            if (player.dy === 0){
+                this.dy*=-1
+            }else{
+                this.dy+=player.dy * .5 
+            }
         }
+        Math.sign(this.dx) === 1 ? this.dx -= .1 : this.dx += .1
+        Math.sign(this.dy) === 1 ? this.dy -= .1 : this.dy += .1
     }
 }
 const player = new Player
