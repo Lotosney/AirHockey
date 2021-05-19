@@ -92,13 +92,85 @@ class Puck {
         Math.sign(this.dy) === 1 ? this.dy -= .1 : this.dy += .1
     }
 }
+
+class Computer{
+    constructor() {
+        this.x = width/4
+        this.y = height/5
+        this.dx = 3
+        this.dy = 3
+        this.homePosition = {
+            x: width/2,
+            y: height/10
+        }
+        this.score = 0
+    }
+
+    draw() {
+        context.beginPath()
+        context.arc(this.x, this.y , width*.05 ,0 ,2*Math.PI)
+        context.fillStyle = "blue"
+        context.fill()
+        context.stroke()
+    }
+    update() {
+
+
+        if (Math.sign(puck.dy) === 1) {
+            this.retract()
+
+        } else if (puck.y < this.y) {
+            this.retract()
+
+        } else if(Math.sign(puck.dy) === -1 && puck.y < height/2) {
+            
+            this.strike()
+
+        }
+
+
+    }
+    strike() {
+        
+        const relativeX = puck.x - this.x
+        const relativeY = puck.y - this.y
+        const theta = Math.atan(relativeX/relativeY)
+        const vector = 10 
+        this.dx = vector*Math.sin(theta)
+        this.dy = vector*Math.cos(theta)
+        
+        this.x += this.dx
+        this.y += this.dy
+    }
+    retract() {
+        this.dx = 3
+        this.dy= 3
+        if(this.x += this.x > this.homePosition.x) 
+        {
+            this.dx*-1
+        } 
+        else{
+            this.dx
+        } 
+        if(this.y += this.y > this.homePosition.y){
+            this.dy*-1
+        } 
+        else{
+            this.dy
+        } 
+    }
+}
 const player = new Player
 const puck = new Puck
+const computer= new Computer
 
 function animate() {
     context.clearRect(0,0,width,height)
     player.draw()
     player.update()
+    
+    computer.draw()
+    computer.update()
 
     puck.draw()
     puck.update()
