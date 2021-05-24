@@ -11,7 +11,12 @@ const board = () => {
     context.moveTo(0,height/2)
     context.lineTo(width,height/2)
     context.moveTo(width/3, 0)
-
+    context.rect(width/3, 0, width/3, height/20)
+    context.moveTo(width/3, 0)
+    context.rect(width/3, height-height/20 , width/3, height)
+    context.font = '48px serif';
+    context.fillText(computer.score, width/15, height/15)
+    context.fillText(player.score, width/15, height - height/16)
     context.stroke()
 }
 
@@ -27,6 +32,8 @@ class Player {
         this.prevY = undefined
         this.dx = undefined
         this.dy = undefined
+        this.score = 0
+
  
     }
 
@@ -66,9 +73,32 @@ class Puck {
         this.x +=this.dx
         this.y += this.dy
 
-        const a = Math.abs(this.x - player.x)
-        const b = Math.abs(this.y - player.y)
-        const c = Math.sqrt(a**2 + b**2)
+        const Pa = Math.abs(this.x - player.x)
+        const Pb = Math.abs(this.y - player.y)
+        const Pc = Math.sqrt(Pa**2 + Pb**2)
+        const Ca = Math.abs(this.x - player.x)
+        const Cb = Math.abs(this.y - player.y)
+        const Cc = Math.sqrt(Ca**2 + Cb**2)
+
+        if(this.y - width*.04 < 0) {
+        if(this.x > width/3 && this.x < 2*width/3) {
+            computer.score++
+            puck.x = width/2
+            puck.y = height/2
+            puck.dx = 0
+            puck.dy = 0
+        } 
+
+    } else if (this.y + width*.04 > height) {
+
+        if(this.x > width/3 && this.x < 2*width/3) {
+            player.score++
+            puck.x = width/2
+            puck.y = height/2
+            puck.dx = 0
+            puck.dy = 0
+        } 
+    }
         if(this.x + width*.04 > width || this.x - width*.04 < 0) {
             this.dx *= -1
         }
@@ -76,17 +106,12 @@ class Puck {
         if(this.y + width*.04 > height || this.y - width*.04 < 0) {
             this.dy *= -1
         }
-        if(c < width*.04 + width*.05){
-            if (player.dx === 0){
-                this.dx*=-1
-            }else{
-                this.dx+=player.dx * .5 
-            }
-            if (player.dy === 0){
-                this.dy*=-1
-            }else{
-                this.dy+=player.dy * .5 
-            }
+        if(Pc < width*.04 + width*.05) {
+            player.dx === 0 ? this.dx *= -1 : this.dx += player.dx * .5
+            player.dy === 0 ? this.dy *= -1 : this.dy += player.dy * .5
+        } else if (Cc < width*.04 + width*.05) {
+            computer.dx === 0 ? this.dx *= -1 : this.dx += computer.dx * .5
+            computer.dy === 0 ? this.dy *= -1 : this.dy += computer.dy * .5
         }
         Math.sign(this.dx) === 1 ? this.dx -= .1 : this.dx += .1
         Math.sign(this.dy) === 1 ? this.dy -= .1 : this.dy += .1
@@ -144,20 +169,9 @@ class Computer{
     }
     retract() {
         this.dx = 3
-        this.dy= 3
-        if(this.x += this.x > this.homePosition.x) 
-        {
-            this.dx*-1
-        } 
-        else{
-            this.dx
-        } 
-        if(this.y += this.y > this.homePosition.y){
-            this.dy*-1
-        } 
-        else{
-            this.dy
-        } 
+        this.dy = 3
+        this.x += this.x > this.homePosition.x ? this.dx*-1 : this.dx
+        this.y += this.y > this.homePosition.y ? this.dy*-1 : this.dy
     }
 }
 const player = new Player
@@ -166,6 +180,9 @@ const computer= new Computer
 
 function animate() {
     context.clearRect(0,0,width,height)
+      
+    board()
+
     player.draw()
     player.update()
     
@@ -174,8 +191,9 @@ function animate() {
 
     puck.draw()
     puck.update()
-    board()    
+    
     requestAnimationFrame(animate)
 }
 
 animate()
+
